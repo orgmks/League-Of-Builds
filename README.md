@@ -1,6 +1,13 @@
 # LoL Hub
 
-Aplicación web completa (frontend y backend) basada en League of Legends. Los jugadores pueden registrarse, crear configuraciones de campeones (objetos, runas, dificultad y versión del juego), editarlas y eliminarlas, además de guardar como favoritas las configuraciones creadas por otros jugadores.
+## Developers :
+Maximiliano Olmedo
+
+Benjamin Marinzulich
+# 
+
+Alguna vez creaste algo que nunca nadie se dio cuenta que funcionaba, esta aplicación es perfecta para ti, sirve para mostrarle a la comunidad del League of Legends, como funciona tu creación, con que item/campeon/linea/descripción, muestrale que creaste algo nuevo que funciona
+
 
 - **Frontend:** Angular 22 + Angular Material (carpeta `frontend/`)
 - **Backend:** FastAPI + SQLAlchemy 2 (carpeta `backend/`)
