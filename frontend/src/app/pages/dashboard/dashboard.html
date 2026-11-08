@@ -1,0 +1,83 @@
+<div class="page">
+  <header class="page-head">
+    <div>
+      <h1>Hola, {{ user()?.username }}</h1>
+      <p>Esto es lo que se está armando en la comunidad.</p>
+    </div>
+    <button mat-flat-button type="button" (click)="newBuild()"><mat-icon>add</mat-icon> Nueva build</button>
+  </header>
+
+  @if (stats.isLoading() && !stats.hasValue()) {
+    <app-loading label="Cargando estadísticas…" />
+  } @else if (stats.error()) {
+    <app-empty-state icon="cloud_off" title="No se pudieron cargar las estadísticas" message="Revisa que el servidor esté activo e inténtalo otra vez.">
+      <button mat-stroked-button type="button" (click)="stats.reload()">Reintentar</button>
+    </app-empty-state>
+  } @else if (stats.value(); as s) {
+    <section class="numbers">
+      <mat-card appearance="outlined"><span class="n">{{ s.total_builds }}</span><span class="l">builds publicadas</span></mat-card>
+      <mat-card appearance="outlined"><span class="n">{{ s.my_builds }}</span><span class="l">son tuyas</span></mat-card>
+      <mat-card appearance="outlined"><span class="n">{{ s.my_favorites }}</span><span class="l">favoritas guardadas</span></mat-card>
+      <mat-card appearance="outlined"><span class="n">{{ s.total_champions }}</span><span class="l">campeones disponibles</span></mat-card>
+    </section>
+
+    <section class="two-col">
+      <mat-card appearance="outlined">
+        <mat-card-header><mat-card-title>Builds por rol</mat-card-title></mat-card-header>
+        <mat-card-content>
+          @if (s.by_role.length === 0) {
+            <p class="muted">Todavía no hay builds para comparar.</p>
+          }
+          @for (r of s.by_role; track r.role) {
+            <div class="bar-row">
+              <span class="role">{{ r.role }}</span>
+              <div class="track"><div class="fill" [style.width.%]="(r.total / maxRol()) * 100"></div></div>
+              <span class="count">{{ r.total }}</span>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="outlined">
+        <mat-card-header><mat-card-title>Campeones más armados</mat-card-title></mat-card-header>
+        <mat-card-content>
+          @if (s.top_champions.length === 0) {
+            <p class="muted">Cuando se publiquen builds aparecerán aquí.</p>
+          }
+          @for (c of s.top_champions; track c.name) {
+            <a class="champ-row" routerLink="/builds" [queryParams]="{ search: c.name }">
+              <app-champion-avatar [imageKey]="c.image_key" [name]="c.name" [size]="36" />
+              <span class="name">{{ c.name }}</span>
+              <span class="count">{{ c.total }} {{ c.total === 1 ? 'build' : 'builds' }}</span>
+            </a>
+          }
+        </mat-card-content>
+      </mat-card>
+    </section>
+  }
+
+  <section class="recent">
+    <div class="recent-head">
+      <h2>Últimas builds</h2>
+      <a mat-button routerLink="/builds">Ver todas</a>
+    </div>
+
+    @if (builds.isLoading() && !builds.hasValue()) {
+      <app-loading />
+    } @else if (builds.error()) {
+      <app-empty-state icon="cloud_off" title="No se pudieron cargar las builds">
+        <button mat-stroked-button type="button" (click)="builds.reload()">Reintentar</button>
+      </app-empty-state>
+    } @else if (recientes().length === 0) {
+      <app-empty-state icon="construction" title="Aún no hay builds" message="Sé la primera persona en publicar una.">
+        <button mat-flat-button type="button" (click)="newBuild()">Crear build</button>
+      </app-empty-state>
+    } @else {
+      <div class="card-grid">
+        @for (b of recientes(); track b.id) {
+          <app-build-card [build]="b" (favoriteToggled)="toggleFavorite($event)" />
+        }
+      </div>
+    }
+  </section>
+</div>

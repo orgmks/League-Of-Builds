@@ -1,0 +1,104 @@
+:host {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.art {
+  position: relative;
+  background: #0e1628 var(--splash) center 20% / cover no-repeat;
+  display: flex;
+  align-items: flex-end;
+  padding: 40px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 16, 32, 0.95) 8%, rgba(10, 16, 32, 0.1) 60%),
+      linear-gradient(to right, transparent 70%, #0a1020);
+  }
+
+  .quote {
+    position: relative;
+    z-index: 1;
+    max-width: 420px;
+
+    h2 {
+      font-size: 2rem;
+      line-height: 1.15;
+      color: var(--gold);
+    }
+
+    p {
+      color: #d9d3c2;
+      margin: 8px 0 0;
+    }
+  }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px clamp(20px, 6vw, 72px);
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 4px;
+  }
+
+  .lead {
+    color: var(--muted);
+    margin: 0 0 24px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  button[type='submit'] {
+    height: 48px;
+    margin-top: 8px;
+  }
+
+  .alt {
+    margin-top: 20px;
+    color: var(--muted);
+  }
+}
+
+.form-error {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #ffb4ab;
+  background: #3b1816;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 860px) {
+  :host {
+    grid-template-columns: 1fr;
+  }
+
+  .art {
+    min-height: 160px;
+    padding: 20px;
+
+    .quote p {
+      display: none;
+    }
+
+    .quote h2 {
+      font-size: 1.3rem;
+    }
+  }
+}

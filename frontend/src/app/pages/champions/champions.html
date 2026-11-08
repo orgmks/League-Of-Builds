@@ -1,0 +1,56 @@
+<div class="page">
+  <header class="page-head">
+    <div>
+      <h1>Campeones</h1>
+      <p>Busca un campeón para ver sus builds o crear una nueva.</p>
+    </div>
+  </header>
+
+  <div class="filters">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Buscar por nombre</mat-label>
+      <input matInput [formControl]="searchCtrl" />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Rol</mat-label>
+      <mat-select [formControl]="roleCtrl">
+        <mat-option value="">Todos</mat-option>
+        @for (r of roles; track r) {
+          <mat-option [value]="r">{{ r }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (champions.isLoading() && champions.value().length === 0) {
+    <app-loading label="Cargando campeones…" />
+  } @else if (champions.error()) {
+    <app-empty-state icon="cloud_off" title="No se pudieron cargar los campeones" message="Revisa que el servidor esté activo.">
+      <button mat-stroked-button type="button" (click)="champions.reload()">Reintentar</button>
+    </app-empty-state>
+  } @else if (champions.value().length === 0) {
+    <app-empty-state icon="search_off" title="Ningún campeón coincide" message="Prueba con otro nombre o quita el filtro de rol.">
+      <button mat-stroked-button type="button" (click)="clear()">Limpiar filtros</button>
+    </app-empty-state>
+  } @else {
+    <div class="grid" [class.refreshing]="champions.isLoading()">
+      @for (c of champions.value(); track c.id) {
+        <mat-card appearance="outlined">
+          <div class="head">
+            <app-champion-avatar [imageKey]="c.image_key" [name]="c.name" [size]="56" />
+            <div>
+              <h3>{{ c.name }}</h3>
+              <span class="title">{{ c.title }}</span>
+            </div>
+          </div>
+          <p class="tags">{{ c.role }} · {{ c.region }}</p>
+          <mat-card-actions>
+            <a mat-button routerLink="/builds" [queryParams]="{ championId: c.id }">Ver builds</a>
+            <button mat-button type="button" (click)="createFor(c)">Crear build</button>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

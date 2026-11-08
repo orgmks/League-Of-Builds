@@ -1,0 +1,88 @@
+@if (build.isLoading() && !build.hasValue()) {
+  <div class="page"><app-loading label="Cargando build…" /></div>
+} @else if (build.error()) {
+  <div class="page">
+    @if (notFound()) {
+      <app-empty-state icon="search_off" title="Esta build no existe" message="Puede que haya sido eliminada por su autor.">
+        <a mat-flat-button routerLink="/builds">Volver a builds</a>
+      </app-empty-state>
+    } @else {
+      <app-empty-state icon="cloud_off" title="No se pudo cargar la build">
+        <button mat-stroked-button type="button" (click)="build.reload()">Reintentar</button>
+        <a mat-button routerLink="/builds">Volver</a>
+      </app-empty-state>
+    }
+  </div>
+} @else if (build.value(); as b) {
+  <header class="banner" [style.--splash]="splash()">
+    <div class="banner-inner">
+      <a mat-button routerLink="/builds" class="back"><mat-icon>arrow_back</mat-icon> Builds</a>
+      <div class="who">
+        <app-champion-avatar [imageKey]="b.champion.image_key" [name]="b.champion.name" [size]="72" />
+        <div>
+          <h1>{{ b.title }}</h1>
+          <p>{{ b.champion.name }} · {{ b.champion.title }}</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="page">
+    <div class="toolbar">
+      <button mat-stroked-button type="button" [class.fav]="b.is_favorite" (click)="toggleFavorite(b)">
+        <mat-icon>{{ b.is_favorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+        {{ b.is_favorite ? 'En favoritas' : 'Agregar a favoritas' }} ({{ b.favorites }})
+      </button>
+      @if (b.is_owner) {
+        <span class="spacer"></span>
+        <button mat-button type="button" (click)="edit(b)"><mat-icon>edit</mat-icon> Editar</button>
+        <button mat-button type="button" class="danger" (click)="remove(b)"><mat-icon>delete</mat-icon> Eliminar</button>
+      }
+    </div>
+
+    <div class="grid">
+      <mat-card appearance="outlined">
+        <mat-card-header><mat-card-title>Ítems</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <ol class="items">
+            @for (item of b.items; track $index) {
+              <li>{{ item }}</li>
+            }
+          </ol>
+          @if (b.runes) {
+            <p class="runes"><strong>Runas:</strong> {{ b.runes }}</p>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="outlined">
+        <mat-card-header><mat-card-title>Ficha</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <dl>
+            <dt>Rol</dt><dd>{{ b.role }}</dd>
+            <dt>Parche</dt><dd>{{ b.patch }}</dd>
+            <dt>Dificultad</dt>
+            <dd>
+              <span class="diff" [attr.aria-label]="b.difficulty + ' de 5'">
+                @for (n of niveles; track n) { <i [class.on]="n <= b.difficulty"></i> }
+              </span>
+            </dd>
+            <dt>Autor</dt><dd>{{ b.author }}</dd>
+            <dt>Publicada</dt><dd>{{ b.created_at | date: 'dd/MM/yyyy' }}</dd>
+          </dl>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <mat-card appearance="outlined" class="desc">
+      <mat-card-header><mat-card-title>Descripción</mat-card-title></mat-card-header>
+      <mat-card-content>
+        @if (b.description) {
+          <p>{{ b.description }}</p>
+        } @else {
+          <p class="muted">El autor no agregó una descripción.</p>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+}

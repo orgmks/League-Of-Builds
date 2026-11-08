@@ -1,0 +1,67 @@
+<div class="page">
+  <header class="page-head">
+    <div>
+      <h1>Builds</h1>
+      <p>Explora, filtra y guarda tus favoritas.</p>
+    </div>
+    <button mat-flat-button type="button" (click)="newBuild()"><mat-icon>add</mat-icon> Nueva build</button>
+  </header>
+
+  <section class="filters">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Buscar por título o campeón</mat-label>
+      <input matInput [formControl]="searchCtrl" />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="role">
+      <mat-label>Rol</mat-label>
+      <mat-select [formControl]="roleCtrl">
+        <mat-option value="">Todos</mat-option>
+        @for (r of roles; track r) {
+          <mat-option [value]="r">{{ r }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-button-toggle-group [formControl]="scopeCtrl" aria-label="Mostrar">
+      <mat-button-toggle value="all">Todas</mat-button-toggle>
+      <mat-button-toggle value="mine">Mis builds</mat-button-toggle>
+      <mat-button-toggle value="favorites">Favoritas</mat-button-toggle>
+    </mat-button-toggle-group>
+  </section>
+
+  @if (filters().championId) {
+    <mat-chip-set class="chips">
+      <mat-chip (removed)="clearChampion()">
+        Campeón: {{ championName() }}
+        <button matChipRemove aria-label="Quitar filtro de campeón"><mat-icon>cancel</mat-icon></button>
+      </mat-chip>
+    </mat-chip-set>
+  }
+
+  @if (builds.isLoading() && builds.value().length === 0) {
+    <app-loading label="Buscando builds…" />
+  } @else if (builds.error()) {
+    <app-empty-state icon="cloud_off" title="No se pudieron cargar las builds" message="Revisa que el servidor esté activo e inténtalo otra vez.">
+      <button mat-stroked-button type="button" (click)="builds.reload()">Reintentar</button>
+    </app-empty-state>
+  } @else if (builds.value().length === 0) {
+    @if (hasFilters()) {
+      <app-empty-state icon="search_off" title="No hay builds con esos filtros" message="Cambia la búsqueda o quita algún filtro.">
+        <button mat-stroked-button type="button" (click)="clearFilters()">Limpiar filtros</button>
+        <button mat-flat-button type="button" (click)="newBuild()">Crear build</button>
+      </app-empty-state>
+    } @else {
+      <app-empty-state icon="construction" title="Todavía no hay builds" message="Publica la primera para que aparezca en esta lista.">
+        <button mat-flat-button type="button" (click)="newBuild()">Crear build</button>
+      </app-empty-state>
+    }
+  } @else {
+    <div class="card-grid" [class.refreshing]="builds.isLoading()">
+      @for (b of builds.value(); track b.id) {
+        <app-build-card [build]="b" (favoriteToggled)="toggleFavorite($event)" />
+      }
+    </div>
+  }
+</div>

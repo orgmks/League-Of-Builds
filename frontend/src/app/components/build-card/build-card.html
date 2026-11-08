@@ -1,0 +1,40 @@
+<mat-card appearance="outlined">
+  <a class="top" [routerLink]="['/builds', build().id]">
+    <app-champion-avatar [imageKey]="build().champion.image_key" [name]="build().champion.name" [size]="52" />
+    <div class="titles">
+      <h3>{{ build().title }}</h3>
+      <span class="sub">{{ build().champion.name }} · {{ build().role }}</span>
+    </div>
+  </a>
+
+  <mat-card-content>
+    <div class="items">
+      @for (item of build().items; track $index) {
+        <span class="item">{{ item }}</span>
+      }
+    </div>
+    <div class="meta">
+      <span class="diff" [attr.aria-label]="'Dificultad ' + build().difficulty + ' de 5'">
+        @for (n of niveles; track n) {
+          <i [class.on]="n <= build().difficulty"></i>
+        }
+      </span>
+      <span>Parche {{ build().patch }}</span>
+      <span>por {{ build().author }}</span>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button
+      mat-button
+      type="button"
+      [class.fav]="build().is_favorite"
+      [attr.aria-pressed]="build().is_favorite"
+      (click)="favoriteToggled.emit(build())"
+    >
+      <mat-icon>{{ build().is_favorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+      {{ build().favorites }}
+    </button>
+    <a mat-button [routerLink]="['/builds', build().id]">Ver detalle</a>
+  </mat-card-actions>
+</mat-card>

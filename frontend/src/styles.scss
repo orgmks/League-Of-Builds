@@ -1,0 +1,118 @@
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: dark;
+  @include mat.theme((
+    color: (
+      primary: mat.$yellow-palette,
+      tertiary: mat.$cyan-palette,
+      theme-type: dark,
+    ),
+    typography: (
+      plain-family: 'Barlow, sans-serif',
+      brand-family: 'Cinzel, serif',
+      bold-weight: 600,
+      medium-weight: 500,
+      regular-weight: 400,
+    ),
+    density: 0,
+  ));
+
+  // ajustes de paleta para que se acerque al cliente de LoL
+  --mat-sys-background: #0a1020;
+  --mat-sys-surface: #0a1020;
+  --mat-sys-on-surface: #ece6d6;
+  --mat-sys-on-surface-variant: #9aa3b5;
+  --mat-sys-surface-container-low: #0e1628;
+  --mat-sys-surface-container: #111a2e;
+  --mat-sys-surface-container-high: #17223a;
+  --mat-sys-surface-container-highest: #1d2a46;
+  --mat-sys-primary: #c8aa6e;
+  --mat-sys-on-primary: #1b1405;
+  --mat-sys-outline: #5b6a8c;
+  --mat-sys-outline-variant: #2a3856;
+
+  --gold: #c8aa6e;
+  --teal: #0ac8b9;
+  --danger: #e5675f;
+  --muted: #9aa3b5;
+  --line: #2a3856;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--mat-sys-background);
+  color: var(--mat-sys-on-surface);
+  font-family: 'Barlow', sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+a {
+  color: var(--gold);
+}
+
+.page {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+}
+
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+
+  h1 {
+    font-size: 1.9rem;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--muted);
+  }
+}
+
+.card-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.snack-ok {
+  --mat-snack-bar-container-color: #0f3d39;
+  --mat-snack-bar-supporting-text-color: #d9fffb;
+  --mat-snack-bar-button-color: #6ef0e4;
+}
+
+.snack-error {
+  --mat-snack-bar-container-color: #4a1d1a;
+  --mat-snack-bar-supporting-text-color: #ffe3e0;
+  --mat-snack-bar-button-color: #ff9d95;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

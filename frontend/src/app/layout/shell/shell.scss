@@ -1,0 +1,70 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.bar {
+  background: #0e1628;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  z-index: 3;
+  gap: 8px;
+}
+
+.brand {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.user-btn {
+  gap: 8px;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #1b1405;
+  font-weight: 600;
+}
+
+.menu-head {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px 12px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 4px;
+
+  small {
+    color: var(--muted);
+  }
+}
+
+.container {
+  flex: 1;
+  background: transparent;
+}
+
+mat-sidenav {
+  width: 220px;
+  background: #0e1628;
+  border-right: 1px solid var(--line);
+}
+
+.active {
+  --mat-list-list-item-label-text-color: var(--gold);
+  background: rgba(200, 170, 110, 0.12);
+}

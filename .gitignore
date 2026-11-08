@@ -1,0 +1,17 @@
+# secretos
+.env
+*.env.local
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# node / angular
+node_modules/
+dist/
+.angular/
+
+# sistema
+.DS_Store

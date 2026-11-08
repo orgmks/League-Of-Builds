@@ -1,0 +1,101 @@
+<h2 mat-dialog-title>{{ editing() ? 'Editar build' : 'Nueva build' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" id="build-form" (ngSubmit)="save()" novalidate>
+    <mat-form-field appearance="outline">
+      <mat-label>Título</mat-label>
+      <input matInput formControlName="title" maxlength="60" placeholder="Ej: Burst de mago full AP" />
+      @if (form.controls.title.hasError('required')) {
+        <mat-error>El título es obligatorio</mat-error>
+      } @else if (form.controls.title.hasError('minlength')) {
+        <mat-error>Debe tener al menos 3 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Campeón</mat-label>
+        <mat-select formControlName="champion_id" (selectionChange)="onChampionChange(championById($event.value))">
+          @for (c of champions.value(); track c.id) {
+            <mat-option [value]="c.id">{{ c.name }}</mat-option>
+          }
+        </mat-select>
+        @if (champions.isLoading()) {
+          <mat-hint>Cargando campeones…</mat-hint>
+        }
+        <mat-error>Elige un campeón</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Rol</mat-label>
+        <mat-select formControlName="role">
+          @for (r of roles; track r) {
+            <mat-option [value]="r">{{ r }}</mat-option>
+          }
+        </mat-select>
+        <mat-error>Elige un rol</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="items" formArrayName="items">
+      <span class="label">Ítems (máx. 6)</span>
+      @for (ctrl of items.controls; track ctrl; let i = $index) {
+        <div class="item-row">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Ítem {{ i + 1 }}</mat-label>
+            <input matInput [formControlName]="i" maxlength="40" />
+            @if (ctrl.hasError('required')) {
+              <mat-error>Escribe el nombre del ítem o quítalo</mat-error>
+            }
+          </mat-form-field>
+          <button mat-icon-button type="button" aria-label="Quitar ítem" [disabled]="items.length === 1" (click)="removeItem(i)">
+            <mat-icon>remove_circle_outline</mat-icon>
+          </button>
+        </div>
+      }
+      <button mat-stroked-button type="button" [disabled]="items.length >= 6" (click)="addItem()">
+        <mat-icon>add</mat-icon> Agregar ítem
+      </button>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Runas</mat-label>
+        <input matInput formControlName="runes" maxlength="80" placeholder="Ej: Electrocutar" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Parche</mat-label>
+        <input matInput formControlName="patch" placeholder="14.24" maxlength="5" />
+        @if (form.controls.patch.hasError('required')) {
+          <mat-error>Indica el parche</mat-error>
+        } @else if (form.controls.patch.hasError('patch')) {
+          <mat-error>Usa el formato 14.24</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="difficulty">
+      <span class="label">Dificultad: {{ form.controls.difficulty.value }} / 5</span>
+      <mat-slider min="1" max="5" step="1" showTickMarks>
+        <input matSliderThumb formControlName="difficulty" />
+      </mat-slider>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="description" rows="3" maxlength="500" placeholder="Cuándo conviene esta build, combos, matchups…"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close [disabled]="saving()">Cancelar</button>
+  <button mat-flat-button type="submit" form="build-form" [disabled]="saving()">
+    @if (saving()) {
+      <mat-progress-spinner mode="indeterminate" diameter="18" />
+    } @else {
+      {{ editing() ? 'Guardar cambios' : 'Crear build' }}
+    }
+  </button>
+</mat-dialog-actions>

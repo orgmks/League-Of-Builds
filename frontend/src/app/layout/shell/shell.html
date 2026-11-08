@@ -1,0 +1,43 @@
+<mat-toolbar class="bar">
+  @if (isMobile()) {
+    <button mat-icon-button type="button" aria-label="Abrir menú" (click)="sidenav().toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  }
+  <a class="brand" routerLink="/inicio">LoL Hub</a>
+  <span class="spacer"></span>
+
+  <button mat-button type="button" [matMenuTriggerFor]="menu" class="user-btn">
+    <span class="avatar">{{ initial() }}</span>
+    @if (!isMobile()) {
+      <span>{{ user()?.username }}</span>
+    }
+  </button>
+  <mat-menu #menu="matMenu">
+    <div class="menu-head">
+      <strong>{{ user()?.username }}</strong>
+      <small>{{ user()?.email }}</small>
+    </div>
+    <button mat-menu-item type="button" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Cerrar sesión</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>
+
+<mat-sidenav-container class="container">
+  <mat-sidenav [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()" [fixedInViewport]="isMobile()" fixedTopGap="64">
+    <mat-nav-list>
+      @for (l of links; track l.path) {
+        <a mat-list-item [routerLink]="l.path" routerLinkActive="active" (click)="closeIfMobile()">
+          <mat-icon matListItemIcon>{{ l.icon }}</mat-icon>
+          <span matListItemTitle>{{ l.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>

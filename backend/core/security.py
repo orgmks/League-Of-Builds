@@ -1,0 +1,32 @@
+from datetime import datetime, timedelta, timezone
+
+import bcrypt
+import jwt
+
+from core.config import settings
+
+
+def hash_password(plain: str) -> str:
+    return bcrypt.hashpw(plain.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+
+def verify_password(plain: str, hashed: str) -> bool:
+    try:
+        return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
+    except ValueError:
+        return False
+
+
+def create_access_token(user_id: int) -> str:
+    expira = datetime.now(timezone.utc) + timedelta(minutes=settings.token_minutes)
+    payload = {"sub": str(user_id), "exp": expira}
+    return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
+
+
+def decode_token(token: str) -> int | None:
+    """Devuelve el id del usuario o None si el token no sirve."""
+    try:
+        data = jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
+        return int(data["sub"])
+    except (jwt.PyJWTError, KeyError, ValueError):
+        return None
