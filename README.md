@@ -1,6 +1,6 @@
 # LoL Hub
 
-Aplicación web full stack temática de League of Legends. Los invocadores se registran, crean **builds** (ítems, runas, dificultad, parche) para cada campeón, las editan, las eliminan y marcan las de otros como favoritas.
+Aplicación web completa (frontend y backend) basada en League of Legends. Los jugadores pueden registrarse, crear configuraciones de campeones (objetos, runas, dificultad y versión del juego), editarlas y eliminarlas, además de guardar como favoritas las configuraciones creadas por otros jugadores.
 
 - **Frontend:** Angular 22 + Angular Material (carpeta `frontend/`)
 - **Backend:** FastAPI + SQLAlchemy 2 (carpeta `backend/`)
@@ -121,23 +121,9 @@ frontend/src/app/
   pages/             login, registro, inicio, campeones, builds, detalle, 404
 ```
 
-## Cómo se usa lo pedido en el taller
-
-- **Signals:** usuario autenticado en `AuthService`; filtros de la lista de builds (`computed` a partir de signals de los controles); estados de carga/error de los formularios.
-- **httpResource:** listados y detalles se cargan con `httpResource` en los servicios (`BuildsService`, `ChampionsService`, `StatsService`) y se vuelven a pedir solos cuando cambia un signal de los filtros.
-- **Reactive Forms:** login, registro y formulario de build (con `FormArray` para los ítems, validador propio para el parche y validador de grupo para repetir contraseña).
-- **Guards:** `authGuard` protege las rutas internas y revisa la expiración del token; `guestGuard` evita volver al login estando logueado.
-- **Interceptors:** `authInterceptor` agrega `Authorization: Bearer` solo a peticiones hacia la API; `errorInterceptor` cierra la sesión si el servidor responde 401.
-- **Angular Material:** toolbar, sidenav, cards, form fields, diálogos, snackbar, spinner, chips, slider, toggle group y menú.
-
 ## Seguridad
 
 - Las contraseñas se guardan con bcrypt, nunca en texto plano.
 - El `.env` está en `.gitignore`; el repositorio solo incluye `.env.example` sin valores reales.
 - Los endpoints (salvo registro y login) exigen JWT, y editar/eliminar builds verifica que el usuario sea el autor.
 
-## Nota sobre imágenes
-
-Los íconos y fondos de campeones se cargan desde Data Dragon (CDN público de Riot). Si no hay conexión, se muestra la inicial del campeón. La versión usada se configura en `environment.ts`.
-
-*Proyecto de fans, no está respaldado por Riot Games.*
